@@ -39,6 +39,37 @@ EOD;
     }
 });
 
+	
+// get all tasks for user id and selected filter
+$app->get('/tasks/user/{id}/filter/{filter}', function(Request $request, $id,$filter) use ($app) {    
+    $query = <<<EOD
+   
+    SELECT todos.todo, todos.time_added, todos.id, categories.category 
+    FROM todos INNER JOIN categories ON todos.id=categories.todo_id 
+    WHERE categories.category = :filter AND todos.uid = :id;
+       
+EOD;
+    
+    $params = array(
+        'id' => $id,
+	 'filter' => $filter
+    );
+
+    if ($request->get('callback') !== NULL) {
+        $response = new JsonResponse($app['db']->fetchAll($query, $params));
+        
+        return $response->setCallback($request->get('callback'));
+    } else {
+        return new JsonResponse($app['db']->fetchAll($query, $params));
+    }
+});
+
+
+
+
+
+
+
 // get categories for specific task id
 $app->get('/task/cat/{id}', function(Request $request, $id) use ($app) {
     $query = <<<EOD

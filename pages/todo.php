@@ -24,7 +24,28 @@
   
   $api_url = 'http://www.jmcdesignstudios.com/task_app/api/index.php/';
 
-  $result= json_decode(file_get_contents($api_url.'tasks/user/'.$user_id));
+
+   if (isset($_GET['filter']))
+    {
+      if ($_GET['filter']=='none')
+      { 
+        // get all todo's unfiltered
+        $result= json_decode(file_get_contents($api_url.'tasks/user/'.$user_id));
+      }
+      else
+      {
+        $filter = $_GET['filter'];  
+       
+	 // get all todo's filtered
+        $result= json_decode(file_get_contents($api_url.'tasks/user/'.$user_id.'/filter/'.$filter));
+      }
+    }
+    else
+    {
+      // get all todo's unfiltered
+        $result= json_decode(file_get_contents($api_url.'tasks/user/'.$user_id));
+    }
+
 
   //$result = getTodos(); 
   
